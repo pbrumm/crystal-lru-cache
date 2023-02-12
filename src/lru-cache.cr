@@ -140,7 +140,7 @@ class LRUCache(K, V)
   end
 
   def shift? : Tuple(K, V)?
-    t = @items.shift
+    t = @items.shift?
     if t
       k, v_t_tuple = t
       {k, v_t_tuple.first}
