@@ -139,6 +139,16 @@ class LRUCache(K, V)
     {k, v_t_tuple.first}
   end
 
+  def shift? : Tuple(K, V)?
+    t = @items.shift
+    if t
+      k, v_t_tuple = t
+      {k, v_t_tuple.first}
+    else
+      nil
+    end
+  end
+
   # Returns the `Hash` containing all items.
   # The `Hash` can be handled normally without affecting the behavior of
   # the LRU cache.
