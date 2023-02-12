@@ -164,6 +164,36 @@ describe LRUCache do
     end
   end
 
+  it "#shift item and move it to top with update" do
+    c = Cache.new
+    c.set(:a, {"a", nil})
+    c.has?(:a).should be_true
+    c.get!(:a).should eq "a"
+
+    c.set(:b, {"b", nil})
+    c.has?(:b).should be_true
+    c.get!(:b).should eq "b"
+
+    # Update with expiration
+    time = Time.utc + 5.milliseconds
+    c.set(:a, {"a", time})
+
+    c.shift.should eq({:b, "b"})
+  end
+
+  it "#shift item" do
+    c = Cache.new
+    c.set(:a, {"a", nil})
+    c.has?(:a).should be_true
+    c.get!(:a).should eq "a"
+
+    c.set(:b, {"b", nil})
+    c.has?(:b).should be_true
+    c.get!(:b).should eq "b"
+
+    c.shift.should eq({:a, "a"})
+  end
+
   it "#add! value" do
     c = Cache.new
     c.add!(:a, "a")

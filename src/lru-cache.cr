@@ -15,8 +15,14 @@ class LRUCache(K, V)
   # Creates a new LRUCache instance.
   # If *max_size* is defined, the LRU cache can only contain *max_size* items.
   # Beyond *max_size*, items are deleted from the oldest to the most recently used.
+  @after_delete_callback = Array(Proc(K, V, Nil)).new
+
   def initialize(*, @max_size : Int32? = nil)
     @items = {} of K => {V, Time?}
+  end
+
+  def register_after_delete(proc : Proc(K, V, Nil))
+    @after_delete_callback << proc
   end
 
   # Same as `get!(key)`.
@@ -127,6 +133,12 @@ class LRUCache(K, V)
     @items.keys
   end
 
+  def shift : Tuple(K, V)
+    t = @items.shift
+    k, v_t_tuple = t
+    {k, v_t_tuple.first}
+  end
+
   # Returns the `Hash` containing all items.
   # The `Hash` can be handled normally without affecting the behavior of
   # the LRU cache.
@@ -182,6 +194,11 @@ class LRUCache(K, V)
   # Optional lifecycle method.
   # Overwrite this method to execute Crystal code after deleting an item (`delete`, expiration).
   private def after_delete(key : K, item : Tuple(V, Time?)?)
+    if item
+      @after_delete_callback.each { |proc|
+        proc.call(key, item.first)
+      }
+    end
   end
 
   # Optional lifecycle method.

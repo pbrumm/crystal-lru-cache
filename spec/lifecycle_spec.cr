@@ -230,6 +230,19 @@ describe "Lifecycle" do
       c.count_after_clear.should eq 0
       c.keys.should eq([:b, :c])
     end
+
+    it "should allow registering callback" do
+      c = LRUCache(Symbol, String).new max_size: 2
+      expired = Array(Symbol).new
+      c.register_after_delete(Proc(Symbol, String, Nil).new { |name, value|
+        expired << name
+      })
+      c.set :a, "a"
+      c.set :b, "b"
+      c.set :c, "c"
+      expired.should eq([:a])
+      c.keys.should eq([:b, :c])
+    end
   end
 
   describe "#after_clear" do
