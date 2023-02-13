@@ -116,9 +116,9 @@ class LRUCache(K, V)
 
   # Deletes an item from the cache.
   # Returns the deleted item or `nil`.
-  def delete(key : K) : Tuple(V, Time?)?
+  def delete(key : K, skip_after_delete = false) : Tuple(V, Time?)?
     item = @items.delete(key)
-    after_delete(key, item) unless item.nil?
+    after_delete(key, item) unless item.nil? && !skip_after_delete
     item
   end
 
