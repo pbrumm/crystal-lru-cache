@@ -243,6 +243,20 @@ describe "Lifecycle" do
       expired.should eq([:a])
       c.keys.should eq([:b, :c])
     end
+
+    it "is skipped by delete #delete" do
+      c = LifecycleCache.new
+      c.set :a, "a"
+      c.count_after_set.should eq 1
+      c.count_after_delete.should eq 0
+      c.count_after_clear.should eq 0
+
+      c.delete(:a, skip_after_delete: true)
+      c.count_after_set.should eq 1
+      c.count_after_delete.should eq 0
+      c.count_after_clear.should eq 0
+      c.has?(:a).should be_false
+    end
   end
 
   describe "#after_clear" do

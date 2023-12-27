@@ -118,7 +118,7 @@ class LRUCache(K, V)
   # Returns the deleted item or `nil`.
   def delete(key : K, skip_after_delete = false) : Tuple(V, Time?)?
     item = @items.delete(key)
-    after_delete(key, item) unless item.nil? && !skip_after_delete
+    after_delete(key, item) if !item.nil? && !skip_after_delete
     item
   end
 
