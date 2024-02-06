@@ -83,6 +83,17 @@ class LRUCache(K, V)
     set(key, {value, expire_at})
   end
 
+  # Sets a value in the cache.
+  def set_if_absent(key : K, expire_at : Time? = nil, & : K -> V) : LRUCache
+    if has?(key)
+      touch(key)
+      self
+    else
+      value = yield(key)
+      set(key, value, expire_at: expire_at)
+    end
+  end
+
   # Sets an item in the cache.
   def set(key : K, item : Tuple(V, Time?)) : LRUCache
     @items.delete(key)

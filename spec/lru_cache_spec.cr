@@ -143,6 +143,19 @@ describe LRUCache do
     end
   end
 
+  it "#set value if exists" do
+    c = Cache.new
+    c.set_if_absent(:a) { |k| "a" }
+    c.has?(:a).should be_true
+    c.get!(:a).should eq "a"
+    c.expire_at!(:a).should be_nil
+
+    time = Time.utc + 5.milliseconds
+    c.set_if_absent(:a, time) { |k| "b" }
+    c.has?(:a).should be_true
+    c.get!(:a).should eq "a"
+  end
+
   it "#set item" do
     c = Cache.new
     c.set(:a, {"a", nil})
