@@ -78,6 +78,16 @@ class LRUCache(K, V)
     @items[key][0]
   end
 
+  def put_if_absent(key : K, value : V) : V
+    entry = get(key)
+    if entry
+      entry
+    else
+      set(key, value)
+      value
+    end
+  end
+
   # Sets a value in the cache.
   def set(key : K, value : V, expire_at : Time? = nil) : LRUCache
     set(key, {value, expire_at})
