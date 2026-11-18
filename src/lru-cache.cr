@@ -95,7 +95,7 @@ class LRUCache(K, V)
       entry
     else
       set(key, value)
-
+      yield value
       value
     end
   end

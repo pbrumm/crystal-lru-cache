@@ -162,6 +162,17 @@ describe LRUCache do
     c.has?(:a).should be_false
   end
 
+  it "#||= with hash" do
+    c = LRUCache(Symbol, Hash(String, Set(String))).new(max_size: 1)
+    c.put_if_absent(:a, Hash(String, Set(String)).new { |h, k| h[k] = Set(String).new }) do |v|
+      v["a"] << "A"
+    end
+
+    r = c.get!(:a)
+    p r
+    r["a"].size.should eq 1
+  end
+
   it "#||= yield" do
     c = Cache.new(max_size: 1)
     v = c.put_if_absent(:a, "a") do |v|
